@@ -213,7 +213,7 @@ def build_model(input_shape):
     # FLATTEN X
     X = Flatten()(X)  # shape=(?, 6272)
     # FULLYCONNECTED
-    X = Dense(1, activation='sigmoid', name='fc')(X)  # shape=(?, 1)
+    X = Dense(2, activation='sigmoid', name='fc')(X)  # shape=(?, 1)
 
     # Create model. This creates your Keras model instance, you'll use this instance to train/test the model.
     model = Model(inputs=X_input, outputs=X, name='BrainDetectionModel')

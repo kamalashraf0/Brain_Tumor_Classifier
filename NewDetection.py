@@ -1,11 +1,10 @@
 from tkinter import *
-import cv2
-import imutils
-import numpy as np
+
 from tkinter import filedialog
-from sklearn.model_selection import train_test_split
-from os import listdir
-from sklearn.utils import shuffle
+import PIL.Image
+import PIL.Image
+
+from PIL import ImageTk
 
 
 
@@ -14,15 +13,26 @@ from sklearn.utils import shuffle
 class ND():
     def ImageProcessing(self):
 
+
         f_types = [('Jpg Files', '*.jpg'), ('PNG Files', '*.png')]  # type of files to select
-        filename = filedialog.askopenfilename(multiple=True, filetypes=f_types)
-        originalImage = cv2.imread(filename)
-        #col = 1  # start from column 1
-        #row = 4  # start from row 3
-        '''
+        filename = filedialog.askopenfilename(filetypes=f_types)
+        self.path=filename
+        print(self.path)
+        img=PIL.Image.open(self.path)
+        resized_image = img.resize((300, 420), PIL.Image.ANTIALIAS)
+        img=ImageTk.PhotoImage(resized_image)
+
+        self.label.configure(image=img)
+        self.label.image=img
+
+
+
+
+
+    '''
         for f in filename:
-            
-            img = Image.open(f)  # read the image file
+
+            img = PIL.Image.open(f)  # read the image file
             img = img.resize((300, 300))  # new width & height
             img = ImageTk.PhotoImage(img)
             e1 = Label()
@@ -66,49 +76,92 @@ class ND():
 
             #Output Image
             cv2.imshow('Original image', originalImage)
-            cv2.imshow('Black&White image', blackAndWhiteImage)
-            cv2.imshow('Cropped image', new_image)
-         '''
+            # cv2.imshow('Black&White image', blackAndWhiteImage)
+            # cv2.imshow('Cropped image', new_image)
 
+    '''
     def __init__(self):
 
 
     #window
-        newWindow = Tk()
-        newWindow.geometry('310x100+200+50')
-        newWindow.resizable(False, False)
+        self.newWindow = Tk()
+        self.newWindow.geometry('1100x680')   #310x100+200+50
+        self.newWindow.resizable(False, False)
+
+        self.newWindow.iconbitmap(r'C:\Users\kamal\Downloads\media_istockphoto_com-brain-cancer-malignant-tumor-oncology-line-icon-vector-id1141445213.ico')
         #newWindow.iconbitmap(r'E:\SSD\Uni\Graduation Project\GUI\icons8-homepage-64.ico')
-        newWindow.title('Tumor Detection')
-        newWindow.configure(background='white')
+        self.newWindow.title('Tumor Detection')
+        self.newWindow.configure(background='black')
         my_font1 = ('cambria', 18, 'bold')
 
-        augmented_path = r'E:\SSD\Uni\Graduation Project\Brain-Tumor-Detection-master\augmented data/'
-
-        # augmented data (yes and no) contains both the original and the new generated examples
-        augmented_yes = augmented_path + 'yes'
-        augmented_no = augmented_path + 'no'
-
-        IMG_WIDTH, IMG_HEIGHT = (240, 240)
-
-
-
-        U_b1 = Button(newWindow, text='Upload Image to Convert', font=my_font1, bg="gray90",height=3, width=22, command=lambda:[self.ImageProcessing()])
-        U_b1.grid(row=1,column=1,columnspan=4)
 
 
 
 
-        #Detect_button = Button(newWindow, text="Tumor Detection", font=my_font1,bg="gray90",height=3, width=20,command=self.tumor_file() )
-
-        #Detect_button.place(x=715 ,y =1)
-
-        #grid(row=2, column=32, columnspan=4)
-
-
-        newWindow.mainloop()
+        bg = ImageTk.PhotoImage(file=r"""E:\SSD\Uni\Graduation Project\Images\1fe2c7_5e8b033ede7f4c3eb3187b2b0dd12ddb_mv2.gif""")
+        bg_image = Label(self.newWindow, image=bg, border=0).place(x=200, y=0)
 
 
 
 
-ND1=ND()
+
+
+
+        U_b1 = Button(self.newWindow, text='Upload Image to Detect', font=my_font1, height=3, width=22,
+                      fg='#33A1C9',bg="#282828", cursor="hand2",command=lambda:[self.ImageProcessing(),self.Detection()])
+        U_b1.grid(row=200,column=5,columnspan=4)
+        U_b1.place(x=570, y=550)
+
+
+
+
+
+        self.frame = Frame(self.newWindow, width=600, height=400, bg="gray90")
+        self.frame.place(x=70, y=50)
+
+    # Create a Label Widget to display the text or Image
+        self.label = Label(self.frame)
+        self.label.place(x=0, y=400)
+        self.label.pack()
+
+
+        self.frame2=Frame(self.newWindow,width=200,height=100,bg="gray90")
+        self.frame2.place(x=120,y=490)
+
+        self.label2=Label(self.frame2,text="",font=my_font1,bg="black",fg="white")
+        self.label2.place(x=0,y=0)
+        self.label2.pack()
+
+
+
+        self.newWindow.mainloop()
+
+    def Detection(self):
+        import os
+
+        import numpy as np
+        from keras.models import load_model
+        from keras.preprocessing import image
+
+        best_model = load_model(filepath=r'E:\SSD\Uni\Graduation Project\Brain-Tumor-Detection-master\cnn-parameters-improvement-11-0.97.model')
+
+
+        import pandas as pd
+        df = pd.read_csv(r"E:\SSD\Uni\Graduation Project\submission.csv")
+        path1=self.path
+        img = image.load_img(os.path.join(path1),target_size=(224, 224))
+        # crop_brain_contour(img)
+        img = np.asarray(img)
+        img = np.expand_dims(img, axis=0)
+        output = best_model.predict(img)
+        if output[0][0] > output[0][1]:
+            print("no")
+            self.label2.configure(text="No Tumor Detected")
+        else:
+            print('yes')
+            self.label2.configure(text="Tumor Detected",fg="red",anchor = "nw")
+
+
+
+#ND1=ND()
 
