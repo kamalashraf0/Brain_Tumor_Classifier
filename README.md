@@ -1,4 +1,4 @@
-# Brain-Tumor-Detector
+# Brain-Tumor-Classifier
 Building a detection model using a convolutional neural network in Tensorflow & Keras.<br>
 Used a brain MRI images data founded on Kaggle. You can find it [here](https://www.kaggle.com/navoneel/brain-mri-images-for-brain-tumor-detection).<br>
 
@@ -68,7 +68,7 @@ So why not try a simpler architecture and train it from scratch. And it worked :
 The model was trained for 24 epochs and these are the loss & accuracy plots:
 
 
-![Loss plot](Loss.PNG)
+![Loss plot](https://raw.githubusercontent.com/MohamedAliHabib/Brain-Tumor-Detection/master/Loss.PNG)
 
 
 ![Accuracy plot](Accuracy.PNG)
